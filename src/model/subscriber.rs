@@ -1,6 +1,13 @@
-use serde::{Deserialize, Serialize};
+use rocket::serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct SubscriberRequest {
+    pub url: String,
+    pub name: String,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(crate = "rocket::serde")]
 pub struct Subscriber {
     pub name: String,

@@ -1,7 +1,6 @@
 use std::thread;
 
 use rocket::http::Status;
-use rocket::log;
 use rocket::serde::json::to_string;
 use rocket::tokio;
 
@@ -32,7 +31,7 @@ impl NotificationService {
             .header("Accept", "application/json")
             .body(to_string(&payload).unwrap())
             .send().await;
-        log::warn!("Sent subscribe request to: {}", request_url);
+        println!("Sent subscribe request to: {}", request_url);
 
         return match request {
             Ok(f) => match f.json::<SubscriberRequest>().await {
@@ -42,9 +41,9 @@ impl NotificationService {
                     y.to_string()
                 ))
             },
-            Err(e) => Err(compose_error_response(
-                Status::NotFound,
-                e.to_string()
+            Err(_y) => Err(compose_error_response(
+                Status::NotAcceptable,
+                String::from("Failed to parse JSON")
             ))
         }
     }
@@ -69,7 +68,7 @@ impl NotificationService {
             .header("Content-Type", "application/json")
             .header("Accept", "application/json")
             .send().await;
-        log::warn!("Sent unsubscribe request to: {}", request_url);
+        println!("Sent unsubscribe request to: {}", request_url);
 
         return match request {
             Ok(f) => match f.json::<SubscriberRequest>().await {
@@ -95,6 +94,10 @@ impl NotificationService {
     pub fn receive_notification(payload: Notification) -> Result<Notification> {
         let subscriber_result: Notification = NotificationRepository::add(payload);
         return Ok(subscriber_result);
+    }
+
+    pub fn list_all_as_string() -> Vec<String> {
+        return NotificationRepository::list_all_as_string();
     }
 
     pub fn list_messages() -> Result<Vec<String>> {

@@ -29,10 +29,8 @@ pub fn receive(notification: Json<Notification>) -> Result<Json<Notification>> {
     };
 }
 
-#get[get("/")]
-pub fn list() -> Result<Json<Vec<String>>> {
-    return match NotificationService::list_all_as_string() {
-        Ok(f) => Ok(Json::from(f)),
-        Err(e) => Err(e)
-    };
+#[get("/")]
+pub fn list() -> Json<Vec<String>> {
+    let list_data = NotificationService::list_all_as_string();
+    return Json(list_data);
 }

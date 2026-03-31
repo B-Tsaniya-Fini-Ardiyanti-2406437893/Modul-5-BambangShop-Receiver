@@ -96,3 +96,21 @@ This is the place for you to write reflections:
 **Answer:** Rust tidak mengizinkan mutasi langsung pada variabel statis seperti Java karena menjamin memory safety dan mencegah data race sejak compile-time. Global mutable state dianggap tidak aman, sehingga tidak diperbolehkan di safe code. Oleh karena itu, digunakan `lazy_static` untuk inisialisasi saat runtime, serta `DashMap` atau `RwLock<>` untuk memungkinkan mutasi yang tetap thread-safe.
 
 #### Reflection Subscriber-2
+**1. Have you explored things outside of the steps in the tutorial, for example: src/lib.rs? If not, explain why you did not do so. If yes, explain things that you have learned from those other parts of code**
+
+**Answer:** 
+Ya, saya sempat melihat sekilas src/lib.rs, tetapi tidak mendalaminya. Saya hanya ingin memahami asal variabel seperti APP_CONFIG dan REQWEST_CLIENT yang sering digunakan pada NotificationService. Dari situ, saya tahu bahwa src/lib.rs berfungsi sebagai tempat konfigurasi global dan shared HTTP client menggunakan lazy_static. Namun, saya tidak mempelajari detailnya karena lebih fokus memastikan logika utama Observer pattern pada controller dan service berjalan dengan baik.
+
+---
+
+**2. Since you have completed the tutorial by now and have tried to test your notification system by spawning multiple instances of Receiver, explain how Observer pattern eases you to plug in more subscribers. How about spawning more than one instance of Main app, will it still be easy enough to add to the system?**
+
+**Answer:** Observer pattern memudahkan penambahan subscriber karena bersifat loosely coupled. Main app tidak perlu mengetahui detail Receiver, cukup menyediakan endpoint /subscribe. Receiver baru bisa langsung mendaftar tanpa perlu mengubah kode Main app.
+
+Namun, jika ada lebih dari satu instance Main app, sistem jadi tidak mudah dikelola. Setiap instance punya data subscriber sendiri (in-memory), sehingga tidak saling sinkron. Untuk mengatasinya, diperlukan penyimpanan terpusat seperti database atau message broker agar semua instance berbagi data yang sama.
+
+---
+
+**3. Have you tried to make your own Tests, or enhance documentation on your Postman collection? If you have tried those features, tell us whether it is useful for your work (it can be your tutorial work or your Group Project).**
+
+**Answer:** Iya, saya menggunakan fitur Tests dan dokumentasi di Postman, dan keduanya sangat membantu, terutama untuk project kelompok. Postman Tests memudahkan validasi otomatis API (misalnya cek status 200 dan struktur response), sehingga bisa jadi regression test sederhana. Dokumentasi membantu komunikasi tim dengan memberikan deskripsi endpoint, header, dan contoh response, sehingga penggunaan API jadi lebih jelas tanpa perlu banyak penjelasan ulang.
